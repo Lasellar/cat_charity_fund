@@ -1,4 +1,7 @@
-from sqlalchemy import Column, Integer
+from sqlalchemy import (
+    Column, Integer, Boolean, DateTime
+)
+from sqlalchemy.sql import func
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, declared_attr
 
