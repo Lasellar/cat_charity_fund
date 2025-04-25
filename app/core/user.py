@@ -1,3 +1,5 @@
+from typing import Union
+
 from fastapi import Depends, Request
 from fastapi_users import (
     BaseUserManager, FastAPIUsers, IntegerIDMixin, InvalidPasswordException
@@ -38,7 +40,7 @@ auth_backend = AuthenticationBackend(
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def validate_password(
-        self, password: str, user: UserCreate | User
+        self, password: str, user: Union[UserCreate, User]
     ) -> None:
         """Валидация пароля."""
         if len(password) < 3:
