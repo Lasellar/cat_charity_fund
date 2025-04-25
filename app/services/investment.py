@@ -33,7 +33,7 @@ async def invest_funds(
 
     active_objs = await session.execute(
         select(db_model)
-        .where(db_model.fully_invested == False)
+        .where(db_model.fully_invested.is_(False))
         .order_by(db_model.create_date.asc(), db_model.id.asc())
     )
     active_objs = active_objs.scalars().all()
