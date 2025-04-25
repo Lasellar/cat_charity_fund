@@ -1,3 +1,5 @@
+from typing import Union
+
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +13,7 @@ class CRUDBase:
         self.model = model
 
     async def create(
-        self, obj_in, session: AsyncSession, user: User | None = None
+        self, obj_in, session: AsyncSession, user: Union[User, None] = None
     ):
         """Создать и сохранить объект в БД."""
         obj_in_data = obj_in.dict()

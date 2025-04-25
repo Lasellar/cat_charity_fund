@@ -1,3 +1,5 @@
+from typing import Union
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +10,7 @@ from app.models.charity_project import CharityProject
 class CRUDCharityProject(CRUDBase):
     async def get_project_id_by_name(
         self, project_name: str, session: AsyncSession,
-    ) -> int | None:
+    ) -> Union[int, None]:
         """Получить проект по названию."""
         db_project_id = await session.execute(
             select(CharityProject.id).where(

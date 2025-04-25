@@ -53,7 +53,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             )
 
     async def on_after_register(
-        self, user: User, request: Request | None = None
+        self, user: User, request: Union[Request, None]
     ) -> None:
         """Действие после успешной регистрации."""
         print(f"Пользователь {user.email} зарегистрирован.")
