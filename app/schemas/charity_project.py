@@ -1,38 +1,28 @@
-from datetime import datetime
+from pydantic import BaseModel, Extra, Field, PositiveInt
 
-from pydantic import BaseModel, Field, field_validator
-
-
-class CharityProjectBase(BaseModel):
-    """Базовая схема."""
-    name: str | None = Field(min_length=1, max_length=100)
-    description: str | None = Field(min_length=1)
-    full_amount: int | None = Field(gt=0)
+from app.schemas.base import AbstractBaseSchema
 
 
-class CharityProjectCreate(CharityProjectBase):
-    """Схема для создания сбора."""
-    name: str = Field(min_length=1, max_length=100)
-    description: str = Field(min_length=1)
-    full_amount: int = Field(gt=0)
+class CharityProjectCreate(BaseModel):
+    """Схема для создания благотворительного проекта."""
+    name: str = Field(..., min_length=1, max_length=100)
+    description: str = Field(..., min_length=1)
+    full_amount: PositiveInt
 
 
-class CharityProjectUpdate(CharityProjectBase):
-    """Схема для обновления сбора."""
-    @field_validator('name')
-    def validate_name(cls, value):
-        if value is None:
-            raise ValueError('Название проекта не может быть пустым.')
-        return value
-
-
-class CharityProjectDB(CharityProjectBase):
-    """Схема для возврата из БД."""
-    id: int
-    invested_amount: int
-    fully_invested: bool
-    create_date: datetime
-    close_date: datetime | None = None
+class CharityProjectUpdate(CharityProjectCreate):
+    """Схема для обновления данных благотворительного проекта."""
+    name: str = Field(None, min_length=1, max_length=100)
+    description: str = Field(None, min_length=1)
+    full_amount: PositiveInt = Field(None)
 
     class Config:
-        from_attributes = True
+        extra = Extra.forbid
+
+
+class CharityProjectDB(CharityProjectCreate, AbstractBaseSchema):
+    """Схема проекта из базы данных."""
+    id: int
+
+    class Config:
+        orm_mode = True

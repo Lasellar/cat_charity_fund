@@ -26,7 +26,7 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(
         secret=settings.secret,
-        lifetime_seconds=settings.jwt_lifetime_seconds
+        lifetime_seconds=settings.jwt_lifetime_seconds,
     )
 
 
@@ -40,20 +40,21 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def validate_password(
         self, password: str, user: UserCreate | User
     ) -> None:
-        if len(password) < 8:
+        """Валидация пароля."""
+        if len(password) < 3:
             raise InvalidPasswordException(
-                reason='Длина пароля должна быть не меньше 8 символов'
+                reason='Password should be at least 3 characters'
             )
         if password.isdigit():
             raise InvalidPasswordException(
-                reason='Пароль не может состоять только из цифр'
+                reason='Password should not contain e-mail'
             )
 
     async def on_after_register(
         self, user: User, request: Request | None = None
     ) -> None:
         """Действие после успешной регистрации."""
-        print(f'USER {user.email} CREATED')
+        print(f"Пользователь {user.email} зарегистрирован.")
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

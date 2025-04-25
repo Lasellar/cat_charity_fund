@@ -1,31 +1,27 @@
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, PositiveInt
+
+from app.schemas.base import AbstractBaseSchema
 
 
 class DonationBase(BaseModel):
-    comment: str | None = Field(min_length=1)
-    full_amount: int = Field(gt=0)
+    """Базовая схема пожертвования."""
+    comment: Optional[str]
+    full_amount: PositiveInt
 
 
-class DonationCreate(DonationBase):
-    pass
-
-
-class DonationDB(DonationBase):
+class DonationDBUser(DonationBase):
+    """Схема пожертвования для возврата из БД для обычного юзера."""
     id: int
-    comment: str | None
-    full_amount: int
+    comment: Optional[str]
     create_date: datetime
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
-class DonationDBAdmin(DonationDB):
+class DonationDBAdmin(DonationDBUser, AbstractBaseSchema):
+    """Схема пожертвования для возврата из БД для суперюзера."""
     user_id: int
-    invested_amount: int
-    fully_invested: bool
-    close_date: datetime | None = None
-
-

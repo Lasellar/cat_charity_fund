@@ -17,4 +17,4 @@ def custom_openapi():
         return json.load(file)
 
 
-app.openapi = custom_openapi
+# app.openapi = custom_openapi
