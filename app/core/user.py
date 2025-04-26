@@ -1,4 +1,5 @@
 from typing import Union
+from logging import getLogger
 
 from fastapi import Depends, Request
 from fastapi_users import (
@@ -14,6 +15,8 @@ from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import User
 from app.schemas.user import UserCreate
+
+logger = getLogger(__name__)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
@@ -56,7 +59,13 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         self, user: User, request: Union[Request, None]
     ) -> None:
         """Действие после успешной регистрации."""
-        print(f"Пользователь {user.email} зарегистрирован.")
+        try:
+            logger.info(f"Пользователь {user.email} зарегистрирован.")
+        except Exception as error:
+            logger.error(
+                'Ошибка при регистрации пользователя',
+                extra={'error': str(error)}, exc_info=True
+            )
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
